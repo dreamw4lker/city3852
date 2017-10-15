@@ -24,6 +24,7 @@
 package com.betanet.city3852.service.api;
 
 import com.betanet.city3852.domain.vehicle.Vehicle;
+import com.betanet.city3852.domain.vehicle.VehicleType;
 import java.util.List;
 
 /**
@@ -32,6 +33,7 @@ import java.util.List;
  */
 public interface VehiclesService {
     
-    public List<Vehicle> getVehiclesListByRouteNumber(String routeNumber);
+    public List<Vehicle> getVehiclesListByRouteNumber(String routeNumber, VehicleType vehicleType);
     
+    //public List<Vehicle> getVehiclesList();
 }

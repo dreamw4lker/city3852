@@ -24,6 +24,7 @@
 package com.betanet.city3852.service.impl;
 
 import com.betanet.city3852.domain.vehicle.Vehicle;
+import com.betanet.city3852.domain.vehicle.VehicleType;
 import com.betanet.city3852.service.api.VehiclesService;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -71,21 +72,23 @@ public class VehiclesServiceImpl implements VehiclesService {
     }
     
     @Override
-    public List<Vehicle> getVehiclesListByRouteNumber(String routeNumber) {
+    public List<Vehicle> getVehiclesListByRouteNumber(String routeNumber, VehicleType vehicleType) {
         JSONArray vehicles = downloadVehiclesMarkers();
         
         List<Vehicle> vehicleEntities = new ArrayList<>();
         try {
             for(Object vehicle : vehicles){
-                if(((JSONObject)vehicle).get("rnum").toString().equals(routeNumber)){
-                    Vehicle vehicleEntity = new Vehicle();
-                    vehicleEntity.setLatitude(((JSONObject)vehicle).get("lat").toString());
-                    vehicleEntity.setLongtitude(((JSONObject)vehicle).get("lon").toString());
-                    vehicleEntity.setRegNumber(((JSONObject)vehicle).get("gos_num").toString());
-                    vehicleEntity.setRouteNumber(((JSONObject)vehicle).get("rnum").toString());
-                    vehicleEntity.setRouteType(((JSONObject)vehicle).get("rtype").toString());
-                    vehicleEntity.setSpeed(Integer.parseInt(((JSONObject)vehicle).get("speed").toString()));
-                    vehicleEntities.add(vehicleEntity);
+                if((routeNumber.equals("")) || (((JSONObject)vehicle).get("rnum").toString().equals(routeNumber))){
+                    if((vehicleType == VehicleType.ALL) || (vehicleType.getName().equals(((JSONObject)vehicle).get("rtype").toString()))){
+                        Vehicle vehicleEntity = new Vehicle();
+                        vehicleEntity.setLatitude(((JSONObject)vehicle).get("lat").toString());
+                        vehicleEntity.setLongtitude(((JSONObject)vehicle).get("lon").toString());
+                        vehicleEntity.setRegNumber(((JSONObject)vehicle).get("gos_num").toString());
+                        vehicleEntity.setRouteNumber(((JSONObject)vehicle).get("rnum").toString());
+                        vehicleEntity.setRouteType(((JSONObject)vehicle).get("rtype").toString());
+                        vehicleEntity.setSpeed(Integer.parseInt(((JSONObject)vehicle).get("speed").toString()));
+                        vehicleEntities.add(vehicleEntity);
+                    }
                 }
             }
         } catch (NumberFormatException | JSONException ex){
@@ -94,5 +97,10 @@ public class VehiclesServiceImpl implements VehiclesService {
         System.out.println(vehicleEntities.size());
         return vehicleEntities;
     }
+
+    //@Override
+    //public List<Vehicle> getVehiclesList() {
+    //    return getVehiclesListByRouteNumber("");
+    //}
     
 }

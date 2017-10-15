@@ -24,6 +24,7 @@
 package com.betanet.city3852.web.controllers;
 
 import com.betanet.city3852.domain.vehicle.Vehicle;
+import com.betanet.city3852.domain.vehicle.VehicleType;
 import com.betanet.city3852.service.api.VehiclesService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Main page controller
@@ -49,8 +51,19 @@ public class IndexController {
     }
     
     @RequestMapping(value = "/markers", method = RequestMethod.GET)
-    public String markers(Model model) {
-        List<Vehicle> vehiclesListByRouteNumber = vehiclesService.getVehiclesListByRouteNumber("29");
+    public String markers(Model model, 
+            @RequestParam(name = "vehicleType", required = false) String vehicleTypeString,
+            @RequestParam(name = "routeNumber", required = false) String routeNumber) {
+        if(routeNumber == null){
+            routeNumber = "";
+        }
+        VehicleType vehicleType;
+        if((vehicleTypeString == null) || (vehicleTypeString.equals(""))){
+            vehicleType = VehicleType.ALL;
+        } else {
+            vehicleType = VehicleType.valueOf(vehicleTypeString);
+        }
+        List<Vehicle> vehiclesListByRouteNumber = vehiclesService.getVehiclesListByRouteNumber(routeNumber, vehicleType);
         model.addAttribute("vehicles", vehiclesListByRouteNumber);
         return "markers";
     }

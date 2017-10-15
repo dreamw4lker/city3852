@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html 
+    lang="en" xmlns:th="http://www.thymeleaf.org"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+    <head>
+        <!--<meta name="csrf-token" th:content="${_csrf.token}"/>-->
+        <link rel="stylesheet" th:href="@{/resources/css/bootstrap.min.css}" type="text/css"/>
+        <script type="text/javascript" th:src="@{/resources/js/jquery-1.10.2.min.js}"></script>
+        <script type="text/javascript" th:src="@{/resources/js/bootstrap.min.js}"></script>
+    </head>
+    <body>
+        <div class="navbar navbar-default navbar-fixed-top">
+            <div class="container"> 
+                <div class="navbar-header">
+                    <a class="navbar-brand">7Bus</a>
+                    <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Автобусы <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#" data-route="1" data-type="BUS" onclick="getMarkers(this)">Маршрут 1</a></li>
+                                <li><a href="#" data-route="10" data-type="BUS" onclick="getMarkers(this)">Маршрут 10</a></li>
+                                <li><a href="#" data-route="29" data-type="BUS" onclick="getMarkers(this)">Маршрут 29</a></li>
+                                <li><a href="#" data-route="53" data-type="BUS" onclick="getMarkers(this)">Маршрут 53</a></li>
+                                <li><a href="#" data-route="60" data-type="BUS" onclick="getMarkers(this)">Маршрут 60</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Маршрутные такси <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#" data-route="18" data-type="MINIBUS" onclick="getMarkers(this)">Маршрут 18</a></li>
+                                <li><a href="#" data-route="27" data-type="MINIBUS" onclick="getMarkers(this)">Маршрут 27</a></li>
+                                <li><a href="#" data-route="50" data-type="MINIBUS" onclick="getMarkers(this)">Маршрут 50</a></li>
+                                <li><a href="#" data-route="73" data-type="MINIBUS" onclick="getMarkers(this)">Маршрут 73</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Трамваи <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#" data-route="1" data-type="TRAMWAY" onclick="getMarkers(this)">Маршрут 1</a></li>
+                                <li><a href="#" data-route="2" data-type="TRAMWAY" onclick="getMarkers(this)">Маршрут 2</a></li>
+                                <li><a href="#" data-route="7" data-type="TRAMWAY" onclick="getMarkers(this)">Маршрут 7</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Троллейбусы <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#" data-route="1" data-type="TROLLEYBUS" onclick="getMarkers(this)">Маршрут 1</a></li>
+                                <li><a href="#" data-route="6" data-type="TROLLEYBUS" onclick="getMarkers(this)">Маршрут 6</a></li>
+                                <li><a href="#" data-route="7" data-type="TROLLEYBUS" onclick="getMarkers(this)">Маршрут 7</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <section layout:fragment="content">
+            <p>Page content is here</p>
+        </section>
+        <script th:inline="javascript">
+            var currentRoute = "";
+            var currentVehicleType = "";
+            
+            $(document).ready(function(){
+                getMarkers(null);
+                setInterval( function(){ 
+                    getMarkers(null); 
+                }, 10000);
+            });
+
+            function getMarkers(obj){
+                if(obj !== null){
+                    currentRoute = $(obj).data("route");
+                    currentVehicleType = $(obj).data("type");
+                }
+                path = /*[[@{/markers?routeNumber=}]]*/;
+                $.ajax({
+                    url: path + currentRoute + "&vehicleType=" + currentVehicleType,
+                    type: 'get',
+                    success: function (html) {
+                        $("#markersContent").html(html);
+                    }
+                });
+            }
+        </script>
+    </body>
+</html>

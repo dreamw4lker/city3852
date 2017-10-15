@@ -54,7 +54,7 @@ public class ServerMain {
     private void startServer() throws Exception {
         initConfiguration();
         Server server = new Server(serverPort);
-        //log.info("City3852 is at port {}", serverPort);
+        System.out.println("City3852 server started at port " + serverPort);
         server.setHandler(getServletContextHandler(getContext()));
         server.start();
         server.join();
@@ -82,5 +82,5 @@ public class ServerMain {
         return context;
     }
     
-    //TODO: securyty filters (if needed)
+    //TODO: security filters (if needed)
 }
