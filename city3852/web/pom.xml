@@ -16,6 +16,10 @@
         <!-- Self project dependencies -->
         <dependency>
             <groupId>com.betanet.city3852</groupId>
+            <artifactId>domain</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.betanet.city3852</groupId>
             <artifactId>service-api</artifactId>
         </dependency>
         <dependency>

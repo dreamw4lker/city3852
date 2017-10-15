@@ -21,32 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.betanet.city3852.web.controllers;
+package com.betanet.city3852.service.api;
 
 import com.betanet.city3852.domain.vehicle.Vehicle;
-import com.betanet.city3852.service.api.VehiclesService;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- * Main page controller
  * 
  * @author shkirkov.au
  */
-@Controller
-public class IndexController {
+public interface VehiclesService {
     
-    @Autowired
-    private VehiclesService vehiclesService;
+    public List<Vehicle> getVehiclesListByRouteNumber(String routeNumber);
     
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String index(Model model) {
-        List<Vehicle> vehiclesListByRouteNumber = vehiclesService.getVehiclesListByRouteNumber("60");
-        model.addAttribute("vehicles", vehiclesListByRouteNumber);
-        return "index";
-    }
 }
