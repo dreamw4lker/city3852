@@ -38,7 +38,8 @@ import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 /**
- *
+ * Vehicle entity creation service
+ * 
  * @author Alexander Shkirkov
  */
 @Service
@@ -74,17 +75,18 @@ public class VehiclesServiceImpl implements VehiclesService {
         JSONArray vehicles = downloadVehiclesMarkers();
         
         List<Vehicle> vehicleEntities = new ArrayList<>();
-        //TODO: check route number
         try {
             for(Object vehicle : vehicles){
-                Vehicle vehicleEntity = new Vehicle();
-                vehicleEntity.setLatitude(((JSONObject)vehicle).get("lat").toString());
-                vehicleEntity.setLongtitude(((JSONObject)vehicle).get("lon").toString());
-                vehicleEntity.setRegNumber(((JSONObject)vehicle).get("gos_num").toString());
-                vehicleEntity.setRouteNumber(((JSONObject)vehicle).get("rnum").toString());
-                vehicleEntity.setRouteType(((JSONObject)vehicle).get("rtype").toString());
-                vehicleEntity.setSpeed(Integer.parseInt(((JSONObject)vehicle).get("speed").toString()));
-                vehicleEntities.add(vehicleEntity);
+                if(((JSONObject)vehicle).get("rnum").toString().equals(routeNumber)){
+                    Vehicle vehicleEntity = new Vehicle();
+                    vehicleEntity.setLatitude(((JSONObject)vehicle).get("lat").toString());
+                    vehicleEntity.setLongtitude(((JSONObject)vehicle).get("lon").toString());
+                    vehicleEntity.setRegNumber(((JSONObject)vehicle).get("gos_num").toString());
+                    vehicleEntity.setRouteNumber(((JSONObject)vehicle).get("rnum").toString());
+                    vehicleEntity.setRouteType(((JSONObject)vehicle).get("rtype").toString());
+                    vehicleEntity.setSpeed(Integer.parseInt(((JSONObject)vehicle).get("speed").toString()));
+                    vehicleEntities.add(vehicleEntity);
+                }
             }
         } catch (NumberFormatException | JSONException ex){
             System.out.println("Error while prepating vehicles list: " + ex.getMessage());

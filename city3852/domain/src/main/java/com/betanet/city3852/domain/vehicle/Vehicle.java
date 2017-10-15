@@ -27,7 +27,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- *
+ * Vehicle entity
+ * 
  * @author Alexander Shkirkov
  */
 @Getter

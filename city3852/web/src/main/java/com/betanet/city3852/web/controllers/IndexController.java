@@ -44,9 +44,14 @@ public class IndexController {
     private VehiclesService vehiclesService;
     
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String index(Model model) {
-        List<Vehicle> vehiclesListByRouteNumber = vehiclesService.getVehiclesListByRouteNumber("60");
-        model.addAttribute("vehicles", vehiclesListByRouteNumber);
+    public String index() {
         return "index";
+    }
+    
+    @RequestMapping(value = "/markers", method = RequestMethod.GET)
+    public String markers(Model model) {
+        List<Vehicle> vehiclesListByRouteNumber = vehiclesService.getVehiclesListByRouteNumber("29");
+        model.addAttribute("vehicles", vehiclesListByRouteNumber);
+        return "markers";
     }
 }
