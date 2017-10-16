@@ -27,7 +27,31 @@
                         zoom: 14
                     })
                 });
-
+                
+                //image style
+                var icon = new ol.style.Icon(({
+                    src: "/resources/img/bus.png"
+                }));
+                icon.load();
+                
+                //triangle style
+                //var stroke = new ol.style.Stroke({color: 'red', width: 1});
+                //var fill = new ol.style.Fill({color: 'yellow'});
+                
+                var imageStyle = new ol.style.Style({
+                    /*image: new ol.style.RegularShape({
+                        fill: fill,
+                        stroke: stroke,
+                        points: 3,
+                        radius: 15,
+                        //rotation: dir * (Math.PI / 180),
+                        angle: 0
+                    }),*/
+                    image: icon
+                });
+                
+                //circle style
+                /*
                 var imageStyle = new ol.style.Style({
                     image: new ol.style.Circle({
                         radius: 12,
@@ -35,7 +59,7 @@
                         fill: new ol.style.Fill({color: 'yellow'}),
                         stroke: new ol.style.Stroke({color: 'red', width: 1})
                     })
-                });
+                });*/
             </script>
         </section>
     </body>

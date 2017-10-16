@@ -45,5 +45,7 @@ public class Vehicle {
     
     String routeNumber;
     
+    Integer dir;
+    
     String routeType;   //TODO: reconstruct to enum if needed
 }

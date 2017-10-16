@@ -87,6 +87,7 @@ public class VehiclesServiceImpl implements VehiclesService {
                         vehicleEntity.setRouteNumber(((JSONObject)vehicle).get("rnum").toString());
                         vehicleEntity.setRouteType(((JSONObject)vehicle).get("rtype").toString());
                         vehicleEntity.setSpeed(Integer.parseInt(((JSONObject)vehicle).get("speed").toString()));
+                        vehicleEntity.setDir(Integer.parseInt(((JSONObject)vehicle).get("dir").toString()));
                         vehicleEntities.add(vehicleEntity);
                     }
                 }
