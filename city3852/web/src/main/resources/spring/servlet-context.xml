@@ -9,12 +9,16 @@
        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
+    <import resource="classpath:/spring/hibernate-config.xml"/>
     <import resource="classpath:/spring/service-context.xml"/>
 
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="ignoreUnresolvablePlaceholders" value="true"/>
         <property name="fileEncoding" value="UTF-8"/>
         <property name="ignoreResourceNotFound" value="true"/>
+        <property name="location">
+            <value>classpath:3852.properties</value>
+        </property>
     </bean>    
     
     <context:component-scan base-package="com.betanet.city3852.web"/>

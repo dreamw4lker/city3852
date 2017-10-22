@@ -25,6 +25,7 @@ package com.betanet.city3852.web.controllers;
 
 import com.betanet.city3852.domain.vehicle.Vehicle;
 import com.betanet.city3852.domain.vehicle.VehicleType;
+import com.betanet.city3852.service.api.StationsService;
 import com.betanet.city3852.service.api.VehiclesService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,9 @@ public class IndexController {
     
     @Autowired
     private VehiclesService vehiclesService;
+    
+    @Autowired
+    private StationsService stationsService;
     
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String index() {
@@ -66,5 +70,11 @@ public class IndexController {
         List<Vehicle> vehiclesListByRouteNumber = vehiclesService.getVehiclesListByRouteNumber(routeNumber, vehicleType);
         model.addAttribute("vehicles", vehiclesListByRouteNumber);
         return "markers";
+    }
+    
+    @RequestMapping(value = "/test", method = RequestMethod.GET)
+    public String test() {
+        System.out.println("ssize:" + stationsService.getAll().size());
+        return "index";
     }
 }

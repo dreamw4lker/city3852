@@ -19,6 +19,10 @@
         </dependency>
         <dependency>
             <groupId>com.betanet.city3852</groupId>
+            <artifactId>repository</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.betanet.city3852</groupId>
             <artifactId>service-api</artifactId>
         </dependency>
         <dependency>
