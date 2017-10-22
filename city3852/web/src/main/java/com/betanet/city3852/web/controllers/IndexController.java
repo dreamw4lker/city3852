@@ -75,6 +75,8 @@ public class IndexController {
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public String test() {
         System.out.println("ssize:" + stationsService.getAll().size());
+        stationsService.initStations();
+        System.out.println("ssize:" + stationsService.getAll().size());
         return "index";
     }
 }

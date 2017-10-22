@@ -27,6 +27,7 @@ import com.betanet.city3852.domain.station.Station;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -44,6 +45,7 @@ public class StationsRepositoryImpl implements StationsRepository{
         return entityManager.createQuery("from Station", Station.class).getResultList();
     }
 
+    @Transactional
     @Override
     public void save(Station station) {
         entityManager.persist(station);

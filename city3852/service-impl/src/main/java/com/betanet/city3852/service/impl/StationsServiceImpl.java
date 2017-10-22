@@ -26,7 +26,16 @@ package com.betanet.city3852.service.impl;
 import com.betanet.city3852.domain.station.Station;
 import com.betanet.city3852.repository.StationsRepository;
 import com.betanet.city3852.service.api.StationsService;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.List;
+import javax.transaction.Transactional;
+import org.apache.commons.io.IOUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +48,45 @@ public class StationsServiceImpl implements StationsService {
     
     @Autowired
     private StationsRepository stationsRepository;
+    
+    private static String stationsDownloadURL = "http://traffic22.ru/php/getStations.php?city=barnaul";
 
+    private JSONArray downloadStations(){
+        JSONArray stationsArray;
+        try {
+            stationsArray = new JSONArray(IOUtils.toString(new URL(stationsDownloadURL), Charset.forName("UTF-8")));
+        } catch (MalformedURLException ex) {
+            System.out.println("Error while creating URL instance: " + ex.getMessage());
+            return null;
+        } catch (IOException ex) {
+            System.out.println("Error while connecting to URL: " + ex.getMessage());
+            return null;
+        }
+        return stationsArray;
+    }
+    
+    @Override
+    public void initStations(){
+        JSONArray stations = downloadStations();
+        
+        try {
+            for(Object station : stations){
+                Station stationEntity = new Station();
+                stationEntity.setStationId(Integer.parseInt(((JSONObject)station).get("id").toString()));
+                stationEntity.setStationName(((JSONObject)station).get("name").toString() 
+                        + " " + ((JSONObject)station).get("descr").toString());
+                stationEntity.setStationType(Integer.parseInt(((JSONObject)station).get("type").toString()));
+                stationEntity.setLatitude(((JSONObject)station).get("lat").toString());
+                stationEntity.setLongtitude(((JSONObject)station).get("lng").toString());
+                
+                save(stationEntity);
+            }
+        } catch (NumberFormatException | JSONException ex){
+            System.out.println("Error while creating or saving stations entity: " + ex.getMessage());
+        }
+    }
+    
+    @Transactional
     @Override
     public void save(Station station) {
         stationsRepository.save(station);
