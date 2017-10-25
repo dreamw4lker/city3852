@@ -33,4 +33,5 @@ import java.util.List;
 public interface StationsRepository {
     public void save(Station station);
     public List<Station> getAll();
+    public Station getByStationIDAndType(Integer stationId, Integer stationType);
 }

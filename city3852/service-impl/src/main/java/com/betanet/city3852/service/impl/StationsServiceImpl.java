@@ -96,4 +96,9 @@ public class StationsServiceImpl implements StationsService {
     public List<Station> getAll() {
         return stationsRepository.getAll();
     }
+
+    @Override
+    public Station getStationByStationIDAndType(Integer stationId, Integer stationType) {
+        return stationsRepository.getByStationIDAndType(stationId, stationType);
+    }
 }

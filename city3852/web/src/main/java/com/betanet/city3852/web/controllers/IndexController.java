@@ -25,6 +25,7 @@ package com.betanet.city3852.web.controllers;
 
 import com.betanet.city3852.domain.vehicle.Vehicle;
 import com.betanet.city3852.domain.vehicle.VehicleType;
+import com.betanet.city3852.service.api.ForecastsService;
 import com.betanet.city3852.service.api.StationsService;
 import com.betanet.city3852.service.api.VehiclesService;
 import java.util.List;
@@ -48,6 +49,9 @@ public class IndexController {
     
     @Autowired
     private StationsService stationsService;
+    
+    @Autowired
+    private ForecastsService forecastsService;
     
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String index(Model model) {
@@ -79,5 +83,13 @@ public class IndexController {
         stationsService.initStations();
         System.out.println("ssize:" + stationsService.getAll().size());
         return "index";
+    }
+    
+    @RequestMapping("/forecast")
+    public String editUser(Model model, @RequestParam(name = "stationId") String stationId,
+            @RequestParam(name = "stationType") String stationType) {
+        model.addAttribute("station", stationsService.getStationByStationIDAndType(Integer.valueOf(stationId), Integer.valueOf(stationType)));
+        model.addAttribute("forecasts", forecastsService.getForecastsByStationIdAndType(Integer.valueOf(stationId), stationType));
+        return "forecastModal :: content";
     }
 }

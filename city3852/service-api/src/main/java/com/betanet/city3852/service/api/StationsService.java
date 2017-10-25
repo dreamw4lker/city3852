@@ -47,4 +47,12 @@ public interface StationsService {
      * Initializing stations table with currently actual stations data
      */
     public void initStations();
+    
+    /**
+     * Gets station with unique id and type
+     * @param stationId
+     * @param stationType
+     * @return station entity
+     */
+    public Station getStationByStationIDAndType(Integer stationId, Integer stationType);
 }

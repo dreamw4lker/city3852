@@ -21,43 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.betanet.city3852.repository;
+package com.betanet.city3852.service.api;
 
-import com.betanet.city3852.domain.station.Station;
+import com.betanet.city3852.domain.vehicle.forecast.Forecast;
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
-import org.springframework.stereotype.Repository;
 
 /**
- *
- * @author Alexander Shkirkov
+ * 
+ * @author shkirkov.au
  */
-@Repository
-public class StationsRepositoryImpl implements StationsRepository{
-
-    @PersistenceContext
-    private EntityManager entityManager;
+public interface ForecastsService {
     
-    @Override
-    public List<Station> getAll() {
-        return entityManager.createQuery("from Station", Station.class).getResultList();
-    }
-
-    @Transactional
-    @Override
-    public void save(Station station) {
-        entityManager.persist(station);
-    }
-
-    @Override
-    public Station getByStationIDAndType(Integer stationId, Integer stationType) {
-        return entityManager.createQuery(
-            "SELECT s FROM Station s WHERE s.stationId = :stationId AND s.stationType = :stationType", Station.class)
-            .setParameter("stationId", stationId)
-            .setParameter("stationType", stationType)
-            .getSingleResult();
-    }
+    public List<Forecast> getForecastsByStationIdAndType(Integer stationId, String type);
     
 }

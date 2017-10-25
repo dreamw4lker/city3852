@@ -24,6 +24,15 @@
             <div id="markersContent">
                 <!-- markers content is in markers.html -->
             </div>
+            
+            <!-- Forecast modal window -->
+            <div id="forecastModal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content" id="forecastContent">
+                        <!-- forecast content in in forecastModal.html -->
+                    </div>
+                </div>
+            </div>
         
             <script th:inline="javascript">
                 var iconStyle = new ol.style.Style({
@@ -111,8 +120,9 @@
                           return feature;
                         });
                     if (feature) {
-                        console.log(feature.get('station_id'));
-                        console.log(feature.get('station_type'));
+                        showForecast(feature.get('station_id'), feature.get('station_type'));
+                        //console.log(feature.get('station_id'));
+                        //console.log(feature.get('station_type'));
                     }
                 });
                 
@@ -126,6 +136,14 @@
                        vectorLayer.setVisible(false);
                     }
                 });
+                
+                
+                //Show forecast modal window
+                function showForecast(stationId, stationType) {
+                    url = /*[[@{/forecast?stationId=}]]*/;
+                    $("#forecastContent").load(url + stationId + "&stationType=" + stationType);
+                    $("#forecastModal").modal('show');
+                }
             </script>
         </section>
     </body>
