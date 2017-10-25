@@ -50,7 +50,8 @@ public class IndexController {
     private StationsService stationsService;
     
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String index() {
+    public String index(Model model) {
+        model.addAttribute("stations", stationsService.getAll());
         return "index";
     }
     

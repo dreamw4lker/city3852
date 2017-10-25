@@ -12,13 +12,13 @@
                     <tr th:if="${vehicles.empty}">
                         <td>No vehicles</td>
                     </tr>
-                    <tr th:value="${vehicle.regNumber}" th:each="vehicle : ${vehicles}" th:data-dir="${vehicle.dir}" th:data-route="${vehicle.routeNumber}" th:data-lat="${vehicle.latitude}" th:data-lon="${vehicle.longtitude}">
-                        <!--<td th:text="${vehicle.regNumber}"></td>-->
+                    <tr th:value="${vehicle.regNumber}" th:each="vehicle : ${vehicles}" 
+                        th:data-dir="${vehicle.dir}" th:data-route="${vehicle.routeNumber}" 
+                        th:data-lat="${vehicle.latitude}" th:data-lon="${vehicle.longtitude}">
                     </tr>
                 </tbody>
-                
             </table>
-
+            
             <script th:inline="javascript">
                 $(document).ready(function(){
                     map.on('postcompose', function(event) {
@@ -39,14 +39,11 @@
                             vectorContext.drawGeometry(new ol.geom.MultiPoint(coordinates));
                             
                         });
-                        
                         map.render();
                     });
                     map.render();
                 });
             </script>
-
-
         </div>
     </body>
 </html>

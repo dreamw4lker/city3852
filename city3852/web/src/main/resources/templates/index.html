@@ -10,16 +10,59 @@
         <section layout:fragment="content">
             <div id="map" class="map">
             </div>
+            <div id="stationsContent">
+                <table style="display: none">
+                    <tbody id="stations-body">
+                        <tr th:if="${stations.empty}">
+                            <td>No stations</td>
+                        </tr>
+                        <tr th:each="station : ${stations}" th:data-sid="${station.stationId}" th:data-type="${station.stationType}" th:data-lat="${station.latitude}" th:data-lon="${station.longtitude}">
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             <div id="markersContent">
                 <!-- markers content is in markers.html -->
             </div>
         
             <script th:inline="javascript">
+                var iconStyle = new ol.style.Style({
+                  image: new ol.style.Icon(({
+                    anchor: [0.5, 46],
+                    anchorXUnits: 'fraction',
+                    anchorYUnits: 'pixels',
+                    src: 'https://openlayers.org/en/v4.4.2/examples/data/icon.png'
+                  }))
+                });
+
+                var vectorSource = new ol.source.Vector({});
+                
+                $("#stations-body").children().each(function(index){
+                    var lat = $(this).data("lat");
+                    var lon = $(this).data("lon");
+                    
+                    var iconFeature = new ol.Feature({
+                        geometry: new ol.geom.Point(new ol.proj.fromLonLat([lon / 1000000, lat / 1000000])),
+                        population: 4000,
+                        rainfall: 500
+                    });
+                    iconFeature.set('station_id', $(this).data("sid"));
+                    iconFeature.set('station_type', $(this).data("type"));
+                    iconFeature.setStyle(iconStyle);
+                    
+                    vectorSource.addFeature(iconFeature);
+                });
+                
+                var vectorLayer = new ol.layer.Vector({
+                  source: vectorSource
+                });
+                
                 var map = new ol.Map({
                     layers: [
                         new ol.layer.Tile({
                             source: new ol.source.OSM()
-                        })
+                        }),
+                        vectorLayer
                     ],
                     target: 'map',
                     view: new ol.View({
@@ -60,6 +103,29 @@
                         stroke: new ol.style.Stroke({color: 'red', width: 1})
                     })
                 });*/
+    
+                //Modal show event
+                map.on('click', function(evt) {
+                    var feature = map.forEachFeatureAtPixel(evt.pixel,
+                        function(feature) {
+                          return feature;
+                        });
+                    if (feature) {
+                        console.log(feature.get('station_id'));
+                        console.log(feature.get('station_type'));
+                    }
+                });
+                
+                //Hide stations on zoom level
+                map.on('moveend', function(e) {
+                    zoom = map.getView().getZoom();
+                    if (zoom >= 16) {
+                       vectorLayer.setVisible(true);
+                    }
+                    else {
+                       vectorLayer.setVisible(false);
+                    }
+                });
             </script>
         </section>
     </body>
