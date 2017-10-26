@@ -23,6 +23,7 @@
  */
 package com.betanet.city3852.domain.vehicle.forecast;
 
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -35,7 +36,7 @@ import lombok.Setter;
 @Setter
 public class Forecast {
     
-    Integer arriveMinutes;
+    List<Integer> arriveMinutes;
     
     String routeNumber;
     

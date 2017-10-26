@@ -69,12 +69,30 @@ public class ForecastsServiceImpl implements ForecastsService {
         
         List<Forecast> forecastEntities = new ArrayList<>();
         try {
+            Integer arriveMinutes;
+            String routeNumber;
+            String routeType;
+            Boolean routeAlreadyAdded;
             for(Object forecast : forecasts){
-                Forecast forecastEntity = new Forecast();
-                forecastEntity.setArriveMinutes((int)TimeUnit.SECONDS.toMinutes(Integer.parseInt(((JSONObject)forecast).get("arrt").toString()))); //TODO: refactor
-                forecastEntity.setRouteNumber(((JSONObject)forecast).get("rnum").toString());
-                forecastEntity.setRouteType(((JSONObject)forecast).get("rtype").toString());
-                forecastEntities.add(forecastEntity);
+                routeAlreadyAdded = false;
+                arriveMinutes = (int)TimeUnit.SECONDS.toMinutes(Integer.parseInt(((JSONObject)forecast).get("arrt").toString())); //TODO: refactor
+                routeNumber = ((JSONObject)forecast).get("rnum").toString();
+                routeType = ((JSONObject)forecast).get("rtype").toString();
+                for(Forecast addedForecast : forecastEntities){
+                    if(addedForecast.getRouteNumber().equals(routeNumber)){
+                        addedForecast.getArriveMinutes().add(arriveMinutes);
+                        routeAlreadyAdded = true;
+                        break;
+                    }
+                }
+                if(!routeAlreadyAdded){
+                    Forecast forecastEntity = new Forecast();
+                    forecastEntity.setArriveMinutes(new ArrayList<>());
+                    forecastEntity.getArriveMinutes().add(arriveMinutes);
+                    forecastEntity.setRouteNumber(routeNumber);
+                    forecastEntity.setRouteType(routeType);
+                    forecastEntities.add(forecastEntity);
+                }
             }
         } catch (NumberFormatException | JSONException ex){
             System.out.println("Error while prepating forecasts: " + ex.getMessage());

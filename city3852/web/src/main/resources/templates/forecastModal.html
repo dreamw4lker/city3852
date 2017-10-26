@@ -23,10 +23,14 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="forecast : ${forecasts}">
-                                    <td th:text="${forecast.routeType}"></td>
+                                <tr th:each="forecast : ${forecasts}"
+                                    th:style="${forecast.routeType == 'А'} ? 'background: #F44336; color: #FFFFFF; font-weight: bold;' : 
+                                    (${forecast.routeType == 'М'} ? 'background: #FFFF8D; font-weight: bold;' : 
+                                    (${forecast.routeType == 'Т'} ? 'background: #64B5F6; font-weight: bold;' :
+                                    (${forecast.routeType == 'Тр'} ? 'background: #66BB6A; color: #FFFFFF; font-weight: bold;' : '' )))">
+                                    <td th:text="${forecast.routeType}"><b></b></td>
                                     <td th:text="${forecast.routeNumber}"></td>
-                                    <td th:text="${forecast.arriveMinutes}"></td>
+                                    <td th:text="${#strings.listJoin(forecast.arriveMinutes, ', ')}"></td>
                                 </tr>
                             </tbody>
                         </table> 
