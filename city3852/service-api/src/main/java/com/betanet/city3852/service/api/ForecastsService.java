@@ -23,6 +23,7 @@
  */
 package com.betanet.city3852.service.api;
 
+import com.betanet.city3852.domain.cookieentity.CookieEntity;
 import com.betanet.city3852.domain.vehicle.forecast.Forecast;
 import java.util.List;
 
@@ -32,6 +33,6 @@ import java.util.List;
  */
 public interface ForecastsService {
     
-    public List<Forecast> getForecastsByStationIdAndType(Integer stationId, String type);
+    public List<Forecast> getForecastsByStationIdAndType(Integer stationId, String type, List<CookieEntity> cookieEntities);
     
 }

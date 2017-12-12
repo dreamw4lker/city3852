@@ -23,12 +23,14 @@
  */
 package com.betanet.city3852.service.impl;
 
+import com.betanet.city3852.domain.cookieentity.CookieEntity;
 import com.betanet.city3852.domain.station.Station;
 import com.betanet.city3852.repository.StationsRepository;
 import com.betanet.city3852.service.api.StationsService;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.util.List;
 import javax.transaction.Transactional;
@@ -51,9 +53,14 @@ public class StationsServiceImpl implements StationsService {
     
     private static String stationsDownloadURL = "http://traffic22.ru/php/getStations.php?city=barnaul";
 
-    private JSONArray downloadStations(){
+    private JSONArray downloadStations(List<CookieEntity> cookieEntities){
         JSONArray stationsArray;
+        String cookieString = "";
+        cookieString = cookieEntities.stream().map((CookieEntity entity) -> entity.getCookieKey() + "=" + entity.getCookieValue() + ";").reduce(cookieString, String::concat);
         try {
+            URLConnection urlConn = new URL(stationsDownloadURL).openConnection();
+            urlConn.setRequestProperty("Cookie", cookieString);
+            urlConn.connect();
             stationsArray = new JSONArray(IOUtils.toString(new URL(stationsDownloadURL), Charset.forName("UTF-8")));
         } catch (MalformedURLException ex) {
             System.out.println("Error while creating URL instance: " + ex.getMessage());
@@ -66,8 +73,8 @@ public class StationsServiceImpl implements StationsService {
     }
     
     @Override
-    public void initStations(){
-        JSONArray stations = downloadStations();
+    public void initStations(List<CookieEntity> cookieEntities){
+        JSONArray stations = downloadStations(cookieEntities);
         
         try {
             for(Object station : stations){

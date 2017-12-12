@@ -23,11 +23,13 @@
  */
 package com.betanet.city3852.service.impl;
 
+import com.betanet.city3852.domain.cookieentity.CookieEntity;
 import com.betanet.city3852.domain.vehicle.forecast.Forecast;
 import com.betanet.city3852.service.api.ForecastsService;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,11 +50,16 @@ public class ForecastsServiceImpl implements ForecastsService {
     
     private static String forecastsDownloadURL = "http://traffic22.ru/php/getStationForecasts.php?";
     
-    private JSONArray downloadForecasts(Integer stationId, String type){
+    private JSONArray downloadForecasts(Integer stationId, String type, List<CookieEntity> cookieEntities){
         JSONArray forecastArray;
+        String cookieString = "";
+        cookieString = cookieEntities.stream().map((CookieEntity entity) -> entity.getCookieKey() + "=" + entity.getCookieValue() + ";").reduce(cookieString, String::concat);
         String urlString = forecastsDownloadURL + "sid=" + stationId + "&type=" + type + "&city=barnaul&info=12345";
         try {
-            forecastArray = new JSONArray(IOUtils.toString(new URL(urlString), Charset.forName("UTF-8")));
+            URLConnection urlConn = new URL(urlString).openConnection();
+            urlConn.setRequestProperty("Cookie", cookieString);
+            urlConn.connect();
+            forecastArray = new JSONArray(IOUtils.toString(urlConn.getInputStream(), Charset.forName("UTF-8")));
         } catch (MalformedURLException ex) {
             System.out.println("Error while creating URL instance: " + ex.getMessage());
             return null;
@@ -64,8 +71,8 @@ public class ForecastsServiceImpl implements ForecastsService {
     }
     
     @Override
-    public List<Forecast> getForecastsByStationIdAndType(Integer stationId, String type) {
-        JSONArray forecasts = downloadForecasts(stationId, type);
+    public List<Forecast> getForecastsByStationIdAndType(Integer stationId, String type, List<CookieEntity> cookieEntities) {
+        JSONArray forecasts = downloadForecasts(stationId, type, cookieEntities);
         
         List<Forecast> forecastEntities = new ArrayList<>();
         try {

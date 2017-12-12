@@ -23,6 +23,7 @@
  */
 package com.betanet.city3852.service.api;
 
+import com.betanet.city3852.domain.cookieentity.CookieEntity;
 import com.betanet.city3852.domain.station.Station;
 import java.util.List;
 
@@ -45,8 +46,9 @@ public interface StationsService {
     
     /**
      * Initializing stations table with currently actual stations data
+     * @param cookieEntities
      */
-    public void initStations();
+    public void initStations(List<CookieEntity> cookieEntities);
     
     /**
      * Gets station with unique id and type

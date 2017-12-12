@@ -65,10 +65,8 @@ public class VehiclesServiceImpl implements VehiclesService {
         String cookieString = "";
         cookieString = cookieEntities.stream().map((CookieEntity entity) -> entity.getCookieKey() + "=" + entity.getCookieValue() + ";").reduce(cookieString, String::concat);
         try {
-            URL url = new URL(vehiclesDownloadURL);
-            URLConnection urlConn = url.openConnection();
+            URLConnection urlConn = new URL(vehiclesDownloadURL).openConnection();
             urlConn.setRequestProperty("Cookie", cookieString); 
-            urlConn.setUseCaches(true); 
             urlConn.connect();
             json = new JSONObject(IOUtils.toString(urlConn.getInputStream(), Charset.forName("UTF-8")));
         } catch (MalformedURLException ex) {

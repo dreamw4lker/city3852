@@ -90,7 +90,10 @@ public class IndexController {
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public String test() {
         System.out.println("ssize:" + stationsService.getAll().size());
-        stationsService.initStations();
+        CookieEntity cookieEntity = cookieEntityService.getCookieEntityByKey("PHPSESSID");
+        List<CookieEntity> cookieEntities = new ArrayList<>();
+        cookieEntities.add(cookieEntity);
+        stationsService.initStations(cookieEntities);
         System.out.println("ssize:" + stationsService.getAll().size());
         return "index";
     }
@@ -99,7 +102,11 @@ public class IndexController {
     public String editUser(Model model, @RequestParam(name = "stationId") String stationId,
             @RequestParam(name = "stationType") String stationType) {
         model.addAttribute("station", stationsService.getStationByStationIDAndType(Integer.valueOf(stationId), Integer.valueOf(stationType)));
-        model.addAttribute("forecasts", forecastsService.getForecastsByStationIdAndType(Integer.valueOf(stationId), stationType));
+        
+        CookieEntity cookieEntity = cookieEntityService.getCookieEntityByKey("PHPSESSID");
+        List<CookieEntity> cookieEntities = new ArrayList<>();
+        cookieEntities.add(cookieEntity);
+        model.addAttribute("forecasts", forecastsService.getForecastsByStationIdAndType(Integer.valueOf(stationId), stationType, cookieEntities));
         return "forecastModal :: content";
     }
 }
