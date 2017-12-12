@@ -23,6 +23,7 @@
  */
 package com.betanet.city3852.service.api;
 
+import com.betanet.city3852.domain.cookieentity.CookieEntity;
 import com.betanet.city3852.domain.vehicle.Vehicle;
 import com.betanet.city3852.domain.vehicle.VehicleType;
 import java.util.List;
@@ -33,7 +34,7 @@ import java.util.List;
  */
 public interface VehiclesService {
     
-    public List<Vehicle> getVehiclesListByRouteNumber(String routeNumber, VehicleType vehicleType);
+    public List<Vehicle> getVehiclesListByRouteNumber(String routeNumber, VehicleType vehicleType, List<CookieEntity> cookieEntities);
     
     //public List<Vehicle> getVehiclesList();
 }

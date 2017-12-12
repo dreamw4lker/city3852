@@ -23,12 +23,14 @@
  */
 package com.betanet.city3852.service.impl;
 
+import com.betanet.city3852.domain.cookieentity.CookieEntity;
 import com.betanet.city3852.domain.vehicle.Vehicle;
 import com.betanet.city3852.domain.vehicle.VehicleType;
 import com.betanet.city3852.service.api.VehiclesService;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +48,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class VehiclesServiceImpl implements VehiclesService {
 
-    private static String vehiclesDownloadURL = "http://traffic22.ru/php/getVehiclesMarkers.php?rids="
+    private static String URLHead = "http://traffic22.ru";
+    private static String vehiclesDownloadURL = URLHead + "/php/getVehiclesMarkers.php?rids="
             + "20-1,19-1,20-0,21-0,8-0,9-0,11-1,12-1,51-0,50-0,5-1,4-1,10-1,9-1,58-0,59-0,8-1,7-1,68-0,67-0,"
             + "12-0,13-0,14-0,15-0,14-1,13-1,16-1,15-1,69-0,70-0,18-1,17-1,64-0,63-0,3-1,2-1,116-0,"
             + "115-0,30-0,31-0,24-0,25-0,120-0,119-0,100-0,99-0,102-0,101-0,41-0,40-0,43-0,42-0,104-0,103-0,"
@@ -57,10 +60,17 @@ public class VehiclesServiceImpl implements VehiclesService {
             + "90-0,89-0,141-0,142-0,133-0,134-0,110-0,109-0,82-0,81-0,80-0,79-0,77-0,78-0,56-0,57-0,86-0,85-0"
             + "&lat0=0&lng0=0&lat1=90&lng1=180&curk=0&city=barnaul&info=12345";
     
-    private JSONArray downloadVehiclesMarkers(){
+    private JSONArray downloadVehiclesMarkers(List<CookieEntity> cookieEntities){
         JSONObject json;
+        String cookieString = "";
+        cookieString = cookieEntities.stream().map((CookieEntity entity) -> entity.getCookieKey() + "=" + entity.getCookieValue() + ";").reduce(cookieString, String::concat);
         try {
-            json = new JSONObject(IOUtils.toString(new URL(vehiclesDownloadURL), Charset.forName("UTF-8")));
+            URL url = new URL(vehiclesDownloadURL);
+            URLConnection urlConn = url.openConnection();
+            urlConn.setRequestProperty("Cookie", cookieString); 
+            urlConn.setUseCaches(true); 
+            urlConn.connect();
+            json = new JSONObject(IOUtils.toString(urlConn.getInputStream(), Charset.forName("UTF-8")));
         } catch (MalformedURLException ex) {
             System.out.println("Error while creating URL instance: " + ex.getMessage());
             return null;
@@ -72,9 +82,9 @@ public class VehiclesServiceImpl implements VehiclesService {
     }
     
     @Override
-    public List<Vehicle> getVehiclesListByRouteNumber(String routeNumber, VehicleType vehicleType) {
-        JSONArray vehicles = downloadVehiclesMarkers();
-        
+    public List<Vehicle> getVehiclesListByRouteNumber(String routeNumber, VehicleType vehicleType, List<CookieEntity> cookieEntities) {
+        JSONArray vehicles = downloadVehiclesMarkers(cookieEntities);
+
         List<Vehicle> vehicleEntities = new ArrayList<>();
         try {
             for(Object vehicle : vehicles){
@@ -97,6 +107,7 @@ public class VehiclesServiceImpl implements VehiclesService {
         }
         System.out.println(vehicleEntities.size());
         return vehicleEntities;
+        
     }
 
     //@Override

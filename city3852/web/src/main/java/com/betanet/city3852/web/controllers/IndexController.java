@@ -23,11 +23,14 @@
  */
 package com.betanet.city3852.web.controllers;
 
+import com.betanet.city3852.domain.cookieentity.CookieEntity;
 import com.betanet.city3852.domain.vehicle.Vehicle;
 import com.betanet.city3852.domain.vehicle.VehicleType;
+import com.betanet.city3852.service.api.CookieEntityService;
 import com.betanet.city3852.service.api.ForecastsService;
 import com.betanet.city3852.service.api.StationsService;
 import com.betanet.city3852.service.api.VehiclesService;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -53,8 +56,12 @@ public class IndexController {
     @Autowired
     private ForecastsService forecastsService;
     
+    @Autowired
+    private CookieEntityService cookieEntityService;
+    
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String index(Model model) {
+        cookieEntityService.initCookies();
         model.addAttribute("stations", stationsService.getAll());
         return "index";
     }
@@ -72,7 +79,10 @@ public class IndexController {
         } else {
             vehicleType = VehicleType.valueOf(vehicleTypeString);
         }
-        List<Vehicle> vehiclesListByRouteNumber = vehiclesService.getVehiclesListByRouteNumber(routeNumber, vehicleType);
+        CookieEntity cookieEntity = cookieEntityService.getCookieEntityByKey("PHPSESSID");
+        List<CookieEntity> cookieEntities = new ArrayList<>();
+        cookieEntities.add(cookieEntity);
+        List<Vehicle> vehiclesListByRouteNumber = vehiclesService.getVehiclesListByRouteNumber(routeNumber, vehicleType, cookieEntities);
         model.addAttribute("vehicles", vehiclesListByRouteNumber);
         return "markers";
     }
