@@ -24,6 +24,7 @@
 package com.betanet.city3852.service.api;
 
 import com.betanet.city3852.domain.cookieentity.CookieEntity;
+import java.util.List;
 
 /**
  *
@@ -47,4 +48,10 @@ public interface CookieEntityService {
      * @return cookie entity
      */
     public CookieEntity getCookieEntityByKey(String key);
+    
+    /**
+     * Gets all currently saved cookies
+     * @return list of cookies
+     */
+    List<CookieEntity> getAllCookies();
 }

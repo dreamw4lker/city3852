@@ -79,10 +79,8 @@ public class IndexController {
         } else {
             vehicleType = VehicleType.valueOf(vehicleTypeString);
         }
-        CookieEntity cookieEntity = cookieEntityService.getCookieEntityByKey("PHPSESSID");
-        List<CookieEntity> cookieEntities = new ArrayList<>();
-        cookieEntities.add(cookieEntity);
-        List<Vehicle> vehiclesListByRouteNumber = vehiclesService.getVehiclesListByRouteNumber(routeNumber, vehicleType, cookieEntities);
+
+        List<Vehicle> vehiclesListByRouteNumber = vehiclesService.getVehiclesListByRouteNumber(routeNumber, vehicleType, cookieEntityService.getAllCookies());
         model.addAttribute("vehicles", vehiclesListByRouteNumber);
         return "markers";
     }
@@ -90,10 +88,8 @@ public class IndexController {
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public String test() {
         System.out.println("ssize:" + stationsService.getAll().size());
-        CookieEntity cookieEntity = cookieEntityService.getCookieEntityByKey("PHPSESSID");
-        List<CookieEntity> cookieEntities = new ArrayList<>();
-        cookieEntities.add(cookieEntity);
-        stationsService.initStations(cookieEntities);
+
+        stationsService.initStations(cookieEntityService.getAllCookies());
         System.out.println("ssize:" + stationsService.getAll().size());
         return "index";
     }
@@ -103,10 +99,7 @@ public class IndexController {
             @RequestParam(name = "stationType") String stationType) {
         model.addAttribute("station", stationsService.getStationByStationIDAndType(Integer.valueOf(stationId), Integer.valueOf(stationType)));
         
-        CookieEntity cookieEntity = cookieEntityService.getCookieEntityByKey("PHPSESSID");
-        List<CookieEntity> cookieEntities = new ArrayList<>();
-        cookieEntities.add(cookieEntity);
-        model.addAttribute("forecasts", forecastsService.getForecastsByStationIdAndType(Integer.valueOf(stationId), stationType, cookieEntities));
+        model.addAttribute("forecasts", forecastsService.getForecastsByStationIdAndType(Integer.valueOf(stationId), stationType, cookieEntityService.getAllCookies()));
         return "forecastModal :: content";
     }
 }

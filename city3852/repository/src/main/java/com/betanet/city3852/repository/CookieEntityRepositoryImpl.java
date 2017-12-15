@@ -24,6 +24,7 @@
 package com.betanet.city3852.repository;
 
 import com.betanet.city3852.domain.cookieentity.CookieEntity;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
@@ -41,14 +42,22 @@ public class CookieEntityRepositoryImpl implements CookieEntityRepository{
     @Transactional
     @Override
     public void save(CookieEntity cookieEntity) {
-        entityManager.persist(cookieEntity);
+        //Merge entity to avoid duplication and detached entity error
+        entityManager.merge(cookieEntity);
     }
 
     @Override
     public CookieEntity getCookieByKey(String cookieKey) {
-        return entityManager.createQuery(
+        List<CookieEntity> results = entityManager.createQuery(
             "SELECT ce FROM CookieEntity ce WHERE ce.cookieKey = :cookieKey", CookieEntity.class)
             .setParameter("cookieKey", cookieKey)
-            .getSingleResult();
+            .getResultList();
+        return (results == null || results.isEmpty()) ? null : results.get(0);
+    }
+
+    @Override
+    public List<CookieEntity> getAllCookies() {
+        return entityManager.createQuery("SELECT ce FROM CookieEntity ce", CookieEntity.class)
+            .getResultList();
     }
 }

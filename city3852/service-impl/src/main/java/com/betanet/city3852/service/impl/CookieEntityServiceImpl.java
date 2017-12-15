@@ -31,6 +31,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -73,8 +74,8 @@ public class CookieEntityServiceImpl implements CookieEntityService{
                     String[] cookieKeyValue = oneCookie.split("=");
                     if(cookieKeyValue.length == 2){
                         CookieEntity cookieEntity = new CookieEntity();
-                        cookieEntity.setCookieKey(cookieKeyValue[0]);
-                        cookieEntity.setCookieValue(cookieKeyValue[1]);
+                        cookieEntity.setCookieKey(cookieKeyValue[0].trim());
+                        cookieEntity.setCookieValue(cookieKeyValue[1].trim());
                         cookieEntity.setCookieDate(LocalDateTime.now());
                         save(cookieEntity);
                     }
@@ -90,5 +91,9 @@ public class CookieEntityServiceImpl implements CookieEntityService{
         return cookieEntityRepository.getCookieByKey(key);
     }
     
+    @Override
+    public List<CookieEntity> getAllCookies(){
+        return cookieEntityRepository.getAllCookies();
+    }
     
 }

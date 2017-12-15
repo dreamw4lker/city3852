@@ -24,6 +24,7 @@
 package com.betanet.city3852.repository;
 
 import com.betanet.city3852.domain.cookieentity.CookieEntity;
+import java.util.List;
 
 /**
  *
@@ -32,4 +33,5 @@ import com.betanet.city3852.domain.cookieentity.CookieEntity;
 public interface CookieEntityRepository {
     public void save(CookieEntity cookieEntity);
     public CookieEntity getCookieByKey(String key);
+    public List<CookieEntity> getAllCookies();
 }
