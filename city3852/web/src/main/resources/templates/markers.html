@@ -14,36 +14,11 @@
                     </tr>
                     <tr th:value="${vehicle.regNumber}" th:each="vehicle : ${vehicles}" 
                         th:data-dir="${vehicle.dir}" th:data-route="${vehicle.routeNumber}" 
-                        th:data-lat="${vehicle.latitude}" th:data-lon="${vehicle.longtitude}">
+                        th:data-lat="${vehicle.latitude}" th:data-lon="${vehicle.longtitude}"
+                        th:data-route-type="${vehicle.routeType}">
                     </tr>
                 </tbody>
             </table>
-            
-            <script th:inline="javascript">
-                $(document).ready(function(){
-                    map.on('postcompose', function(event) {
-                        var vectorContext = event.vectorContext;
-                        $("#vehicles-body").children().each(function(index){
-                            var lat = $(this).data("lat");
-                            var lon = $(this).data("lon");
-                            var rnum = $(this).data("route");
-                            var dir = $(this).data("dir");
-                            
-                            imageStyle.getImage().setRotation(dir * (Math.PI / 180));
-                           
-                            var coordinates = [];
-                            coordinates.push(new ol.proj.fromLonLat([lon / 1000000, lat / 1000000]));
-                            
-                            imageStyle.setText(new ol.style.Text({ font: '18px sans-serif', text: rnum}));
-                            vectorContext.setStyle(imageStyle);
-                            vectorContext.drawGeometry(new ol.geom.MultiPoint(coordinates));
-                            
-                        });
-                        map.render();
-                    });
-                    map.render();
-                });
-            </script>
         </div>
     </body>
 </html>

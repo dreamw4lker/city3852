@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html layout:decorate="~{base}">
     <head>
-        <link rel="stylesheet" href="https://openlayers.org/en/v4.4.2/css/ol.css" type="text/css">
-        <script type="text/javascript" src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
-        <script type="text/javascript" src="https://openlayers.org/en/v4.4.2/build/ol.js"></script>
+        <link rel="stylesheet" href="https://openlayers.org/en/v4.6.4/css/ol.css" type="text/css">
+        <script type="text/javascript" src="https://openlayers.org/en/v4.6.4/build/ol.js"></script>
         <title>7Bus - Главная страница</title>
     </head>
     <body>
@@ -35,17 +34,15 @@
             </div>
         
             <script th:inline="javascript">
-                var iconStyle = new ol.style.Style({
-                  image: new ol.style.Icon(({
-                    anchor: [0.5, 46],
-                    anchorXUnits: 'fraction',
-                    anchorYUnits: 'pixels',
-                    src: 'https://openlayers.org/en/v4.4.2/examples/data/icon.png'
-                  }))
+                var iconStyleStation = new ol.style.Style({
+                    image: new ol.style.Icon(({
+                        src: "/resources/img/station.png"
+                    }))
                 });
 
                 var vectorSource = new ol.source.Vector({});
                 
+                //Preparing station markers
                 $("#stations-body").children().each(function(index){
                     var lat = $(this).data("lat");
                     var lon = $(this).data("lon");
@@ -57,15 +54,16 @@
                     });
                     iconFeature.set('station_id', $(this).data("sid"));
                     iconFeature.set('station_type', $(this).data("type"));
-                    iconFeature.setStyle(iconStyle);
+                    iconFeature.setStyle(iconStyleStation);
                     
                     vectorSource.addFeature(iconFeature);
                 });
                 
                 var vectorLayer = new ol.layer.Vector({
-                  source: vectorSource
+                    source: vectorSource
                 });
                 
+                //Preparing map entity
                 var map = new ol.Map({
                     layers: [
                         new ol.layer.Tile({
@@ -80,49 +78,51 @@
                     })
                 });
                 
-                //image style
-                var icon = new ol.style.Icon(({
+                //Preparing vehicle icons
+                var iconBus = new ol.style.Icon(({
                     src: "/resources/img/bus.png"
                 }));
-                icon.load();
+                iconBus.load();
                 
-                //triangle style
-                //var stroke = new ol.style.Stroke({color: 'red', width: 1});
-                //var fill = new ol.style.Fill({color: 'yellow'});
+                var iconMinibus = new ol.style.Icon(({
+                    src: "/resources/img/minibus.png"
+                }));
+                iconMinibus.load();
                 
-                var imageStyle = new ol.style.Style({
-                    /*image: new ol.style.RegularShape({
-                        fill: fill,
-                        stroke: stroke,
-                        points: 3,
-                        radius: 15,
-                        //rotation: dir * (Math.PI / 180),
-                        angle: 0
-                    }),*/
-                    image: icon
+                var iconTramway = new ol.style.Icon(({
+                    src: "/resources/img/tramway.png"
+                }));
+                iconTramway.load();
+                
+                var iconTrolleybus = new ol.style.Icon(({
+                    src: "/resources/img/trolleybus.png"
+                }));
+                iconTrolleybus.load();
+                
+                //Preparing vehicle image styles
+                var imageStyleBus = new ol.style.Style({
+                    image: iconBus
                 });
                 
-                //circle style
-                /*
-                var imageStyle = new ol.style.Style({
-                    image: new ol.style.Circle({
-                        radius: 12,
-                        snapToPixel: false,
-                        fill: new ol.style.Fill({color: 'yellow'}),
-                        stroke: new ol.style.Stroke({color: 'red', width: 1})
-                    })
-                });*/
-    
+                var imageStyleMinibus = new ol.style.Style({
+                    image: iconMinibus
+                });
+                
+                var imageStyleTramway = new ol.style.Style({
+                    image: iconTramway
+                });
+                
+                var imageStyleTrolleybus = new ol.style.Style({
+                    image: iconTrolleybus
+                });
+                
                 //Modal show event
                 map.on('click', function(evt) {
-                    var feature = map.forEachFeatureAtPixel(evt.pixel,
-                        function(feature) {
-                          return feature;
-                        });
+                    var feature = map.forEachFeatureAtPixel(evt.pixel, function(feature) {
+                        return feature;
+                    });
                     if (feature) {
                         showForecast(feature.get('station_id'), feature.get('station_type'));
-                        //console.log(feature.get('station_id'));
-                        //console.log(feature.get('station_type'));
                     }
                 });
                 
@@ -130,13 +130,52 @@
                 map.on('moveend', function(e) {
                     zoom = map.getView().getZoom();
                     if (zoom >= 16) {
-                       vectorLayer.setVisible(true);
+                        vectorLayer.setVisible(true);
                     }
                     else {
-                       vectorLayer.setVisible(false);
+                        vectorLayer.setVisible(false);
                     }
                 });
                 
+                //Show vehicle markers on map
+                map.on('postcompose', function(event) {
+                    var vectorContext = event.vectorContext;
+                    $("#vehicles-body").children().each(function(index){
+                        var lat = $(this).data("lat");
+                        var lon = $(this).data("lon");
+                        var rnum = $(this).data("route");
+                        var dir = $(this).data("dir");
+                        var routeType = $(this).data("route-type");
+
+                        var imageStyle;
+                        switch(routeType) {
+                            case "А":
+                                imageStyle = imageStyleBus;
+                                break;
+                            case "М":
+                                imageStyle = imageStyleMinibus;
+                                break;
+                            case "Т":
+                                imageStyle = imageStyleTrolleybus;
+                                break;
+                            case "Тр":
+                                imageStyle = imageStyleTramway;
+                                break;
+                            default:
+                                break;
+                        }
+
+                        imageStyle.getImage().setRotation(dir * (Math.PI / 180));
+
+                        var coordinates = [];
+                        coordinates.push(new ol.proj.fromLonLat([lon / 1000000, lat / 1000000]));
+
+                        imageStyle.setText(new ol.style.Text({ font: '18px sans-serif', text: rnum}));
+                        vectorContext.setStyle(imageStyle);
+                        vectorContext.drawGeometry(new ol.geom.MultiPoint(coordinates));
+                    });
+                    map.render();
+                });
                 
                 //Show forecast modal window
                 function showForecast(stationId, stationType) {
