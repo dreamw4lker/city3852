@@ -23,15 +23,20 @@
  */
 package com.betanet.city3852.web.controllers;
 
-import com.betanet.city3852.domain.cookieentity.CookieEntity;
 import com.betanet.city3852.domain.vehicle.Vehicle;
-import com.betanet.city3852.domain.vehicle.VehicleType;
 import com.betanet.city3852.service.api.CookieEntityService;
 import com.betanet.city3852.service.api.ForecastsService;
 import com.betanet.city3852.service.api.StationsService;
 import com.betanet.city3852.service.api.VehiclesService;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -66,21 +71,36 @@ public class IndexController {
         return "index";
     }
     
+    @Setter
+    private static class MarkerParametersData {
+
+        @JsonProperty("parameters")
+        List<MarkerParameter> markerParameters;
+
+        public List<Entry<String, String>> getParametersList() {
+            List<Entry<String,String>> parametersList = new ArrayList<>();
+            markerParameters.forEach((mp) -> {
+                parametersList.add(new AbstractMap.SimpleEntry<>(mp.key, mp.value));
+            });
+            return parametersList;
+        }
+    }
+
+    @Setter
+    @Getter
+    private static class MarkerParameter { 
+        String key;
+        String value;
+    }
+    
+    //TODO: work on IOException
+    //TODO: change to POST method?
     @RequestMapping(value = "/markers", method = RequestMethod.GET)
     public String markers(Model model, 
-            @RequestParam(name = "vehicleType", required = false) String vehicleTypeString,
-            @RequestParam(name = "routeNumber", required = false) String routeNumber) {
-        if(routeNumber == null){
-            routeNumber = "";
-        }
-        VehicleType vehicleType;
-        if((vehicleTypeString == null) || (vehicleTypeString.equals(""))){
-            vehicleType = VehicleType.ALL;
-        } else {
-            vehicleType = VehicleType.valueOf(vehicleTypeString);
-        }
-
-        List<Vehicle> vehiclesListByRouteNumber = vehiclesService.getVehiclesListByRouteNumber(routeNumber, vehicleType, cookieEntityService.getAllCookies());
+            @RequestParam(name = "parameters", required = false) String parametersString) throws IOException { 
+        MarkerParametersData markersData = new ObjectMapper().readValue(parametersString, MarkerParametersData.class);
+        
+        List<Vehicle> vehiclesListByRouteNumber = vehiclesService.getVehiclesListByRouteNumber(markersData.getParametersList(), cookieEntityService.getAllCookies());
         model.addAttribute("vehicles", vehiclesListByRouteNumber);
         return "markers";
     }

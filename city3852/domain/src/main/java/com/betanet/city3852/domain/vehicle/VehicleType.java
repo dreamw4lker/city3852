@@ -30,7 +30,6 @@ import lombok.Getter;
  * 
  * @author Alexander Shkirkov
  */
-@Getter
 public enum VehicleType {
 
     ALL("Все типы"),
@@ -42,6 +41,16 @@ public enum VehicleType {
     private VehicleType(String name) {
         this.name = name;
     }
-
+    
+    @Getter
     private final String name;
+    
+    public static String getVehicleTypeByValue(String value){
+        for(VehicleType vt : VehicleType.values()){
+            if(vt.name.equals(value)) {
+                return vt.name();
+            }
+        }
+        return null;
+    }
 }

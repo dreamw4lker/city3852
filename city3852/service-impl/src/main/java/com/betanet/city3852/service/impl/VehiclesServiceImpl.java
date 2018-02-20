@@ -32,8 +32,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -80,24 +83,24 @@ public class VehiclesServiceImpl implements VehiclesService {
     }
     
     @Override
-    public List<Vehicle> getVehiclesListByRouteNumber(String routeNumber, VehicleType vehicleType, List<CookieEntity> cookieEntities) {
+    public List<Vehicle> getVehiclesListByRouteNumber(List<Entry<String, String>> markersData, List<CookieEntity> cookieEntities) {
         JSONArray vehicles = downloadVehiclesMarkers(cookieEntities);
-
+        
         List<Vehicle> vehicleEntities = new ArrayList<>();
         try {
             for(Object vehicle : vehicles){
-                if((routeNumber.equals("")) || (((JSONObject)vehicle).get("rnum").toString().equals(routeNumber))){
-                    if((vehicleType == VehicleType.ALL) || (vehicleType.getName().equals(((JSONObject)vehicle).get("rtype").toString()))){
-                        Vehicle vehicleEntity = new Vehicle();
-                        vehicleEntity.setLatitude(((JSONObject)vehicle).get("lat").toString());
-                        vehicleEntity.setLongtitude(((JSONObject)vehicle).get("lon").toString());
-                        vehicleEntity.setRegNumber(((JSONObject)vehicle).get("gos_num").toString());
-                        vehicleEntity.setRouteNumber(((JSONObject)vehicle).get("rnum").toString());
-                        vehicleEntity.setRouteType(((JSONObject)vehicle).get("rtype").toString());
-                        vehicleEntity.setSpeed(Integer.parseInt(((JSONObject)vehicle).get("speed").toString()));
-                        vehicleEntity.setDir(Integer.parseInt(((JSONObject)vehicle).get("dir").toString()));
-                        vehicleEntities.add(vehicleEntity);
-                    }
+                if(markersData.isEmpty() || markersData.contains(new AbstractMap.SimpleEntry<>(
+                        ((JSONObject)vehicle).get("rnum").toString(),
+                        VehicleType.getVehicleTypeByValue(((JSONObject)vehicle).get("rtype").toString())))){
+                    Vehicle vehicleEntity = new Vehicle();
+                    vehicleEntity.setLatitude(((JSONObject)vehicle).get("lat").toString());
+                    vehicleEntity.setLongtitude(((JSONObject)vehicle).get("lon").toString());
+                    vehicleEntity.setRegNumber(((JSONObject)vehicle).get("gos_num").toString());
+                    vehicleEntity.setRouteNumber(((JSONObject)vehicle).get("rnum").toString());
+                    vehicleEntity.setRouteType(((JSONObject)vehicle).get("rtype").toString());
+                    vehicleEntity.setSpeed(Integer.parseInt(((JSONObject)vehicle).get("speed").toString()));
+                    vehicleEntity.setDir(Integer.parseInt(((JSONObject)vehicle).get("dir").toString()));
+                    vehicleEntities.add(vehicleEntity);
                 }
             }
         } catch (NumberFormatException | JSONException ex){

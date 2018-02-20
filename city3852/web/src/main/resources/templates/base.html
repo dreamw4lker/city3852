@@ -6,12 +6,16 @@
     <head>
         <!--<meta name="csrf-token" th:content="${_csrf.token}"/>-->
         <link rel="stylesheet" th:href="@{/resources/css/bootstrap.min.css}" type="text/css"/>
+        <link rel="stylesheet" th:href="@{/resources/css/bootstrap-multiselect.css}" type="text/css"/>
+        <link rel="stylesheet" th:href="@{/resources/css/custom.min.css}" type="text/css"/>
+        
         <script type="text/javascript" th:src="@{/resources/js/jquery-1.10.2.min.js}"></script>
         <script type="text/javascript" th:src="@{/resources/js/bootstrap.min.js}"></script>
+        <script type="text/javascript" th:src="@{/resources/js/bootstrap-multiselect.js}"></script>
     </head>
     <body>
         <div class="navbar navbar-default navbar-fixed-top">
-            <div class="container"> 
+            <div class="container">
                 <div class="navbar-header">
                     <a class="navbar-brand">7Bus</a>
                     <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
@@ -20,41 +24,35 @@
                         <span class="icon-bar"></span>
                     </button>
                 </div>
-                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
+                        <select id="multiselect-bus" multiple="multiple">
+                            <option data-route="1" data-type="BUS">Маршрут 1</option>
+                            <option data-route="10" data-type="BUS">Маршрут 10</option>
+                            <option data-route="29" data-type="BUS">Маршрут 29</option>
+                            <option data-route="53" data-type="BUS">Маршрут 53</option>
+                            <option data-route="60" data-type="BUS">Маршрут 60</option>
+                        </select>
+                        <select id="multiselect-mt" multiple="multiple">
+                            <option data-route="18" data-type="MINIBUS">Маршрут 18</option>
+                            <option data-route="27" data-type="MINIBUS">Маршрут 27</option>
+                            <option data-route="50" data-type="MINIBUS">Маршрут 50</option>
+                            <option data-route="73" data-type="MINIBUS">Маршрут 73</option>
+                        </select>
+                        <select id="multiselect-tram" multiple="multiple">
+                            <option data-route="1" data-type="TRAMWAY">Маршрут 1</option>
+                            <option data-route="2" data-type="TRAMWAY">Маршрут 2</option>
+                            <option data-route="7" data-type="TRAMWAY">Маршрут 7</option>
+                        </select>
+                        <select id="multiselect-troll" multiple="multiple">
+                            <option data-route="1" data-type="TROLLEYBUS">Маршрут 1</option>
+                            <option data-route="6" data-type="TROLLEYBUS">Маршрут 6</option>
+                            <option data-route="7" data-type="TROLLEYBUS">Маршрут 7</option>
+                        </select>
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Автобусы <span class="caret"></span></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Настройки <span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="#" data-route="1" data-type="BUS" onclick="getMarkers(this)">Маршрут 1</a></li>
-                                <li><a href="#" data-route="10" data-type="BUS" onclick="getMarkers(this)">Маршрут 10</a></li>
-                                <li><a href="#" data-route="29" data-type="BUS" onclick="getMarkers(this)">Маршрут 29</a></li>
-                                <li><a href="#" data-route="53" data-type="BUS" onclick="getMarkers(this)">Маршрут 53</a></li>
-                                <li><a href="#" data-route="60" data-type="BUS" onclick="getMarkers(this)">Маршрут 60</a></li>
-                            </ul>
-                        </li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Маршрутные такси <span class="caret"></span></a>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="#" data-route="18" data-type="MINIBUS" onclick="getMarkers(this)">Маршрут 18</a></li>
-                                <li><a href="#" data-route="27" data-type="MINIBUS" onclick="getMarkers(this)">Маршрут 27</a></li>
-                                <li><a href="#" data-route="50" data-type="MINIBUS" onclick="getMarkers(this)">Маршрут 50</a></li>
-                                <li><a href="#" data-route="73" data-type="MINIBUS" onclick="getMarkers(this)">Маршрут 73</a></li>
-                            </ul>
-                        </li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Трамваи <span class="caret"></span></a>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="#" data-route="1" data-type="TRAMWAY" onclick="getMarkers(this)">Маршрут 1</a></li>
-                                <li><a href="#" data-route="2" data-type="TRAMWAY" onclick="getMarkers(this)">Маршрут 2</a></li>
-                                <li><a href="#" data-route="7" data-type="TRAMWAY" onclick="getMarkers(this)">Маршрут 7</a></li>
-                            </ul>
-                        </li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Троллейбусы <span class="caret"></span></a>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="#" data-route="1" data-type="TROLLEYBUS" onclick="getMarkers(this)">Маршрут 1</a></li>
-                                <li><a href="#" data-route="6" data-type="TROLLEYBUS" onclick="getMarkers(this)">Маршрут 6</a></li>
-                                <li><a href="#" data-route="7" data-type="TROLLEYBUS" onclick="getMarkers(this)">Маршрут 7</a></li>
+                                <li><a href="#" data-route="1" data-type="BUS" onclick="showRegNumber = !showRegNumber">Отображать гос.номера</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -73,16 +71,64 @@
                 setInterval( function(){ 
                     getMarkers(null); 
                 }, 10000);
+                $('#multiselect-bus').multiselect({
+                    buttonContainer: '<li class="dropdown" />',
+                    buttonClass: '',
+                    buttonText: function(options, select) {
+                        return 'Автобусы';
+                    },
+                    onChange: function(option, checked, select) {
+                        getMarkers();
+                    }
+                });
+                $('#multiselect-mt').multiselect({
+                    buttonContainer: '<li class="dropdown" />',
+                    buttonClass: '',
+                    buttonText: function(options, select) {
+                        return 'Маршрутные такси';
+                    },
+                    onChange: function(option, checked, select) {
+                        getMarkers();
+                    }
+                });
+                $('#multiselect-tram').multiselect({
+                    buttonContainer: '<li class="dropdown" />',
+                    buttonClass: '',
+                    buttonText: function(options, select) {
+                        return 'Трамваи';
+                    },
+                    onChange: function(option, checked, select) {
+                        getMarkers();
+                    }
+                });
+                $('#multiselect-troll').multiselect({
+                    buttonContainer: '<li class="dropdown" />',
+                    buttonClass: '',
+                    buttonText: function(options, select) {
+                        return 'Троллейбусы';
+                    },
+                    onChange: function(option, checked, select) {
+                        getMarkers();
+                    }
+                });
             });
 
             function getMarkers(obj){
-                if(obj !== null){
-                    currentRoute = $(obj).data("route");
-                    currentVehicleType = $(obj).data("type");
-                }
+                
+                var data = new Object();
+                var parameters = [];
+                $("#multiselect-bus option:selected, #multiselect-mt option:selected, #multiselect-tram option:selected, #multiselect-troll option:selected").each(function () {
+                    var parameter = new Object();
+                    parameter.key = $(this).data("route");
+                    parameter.value = $(this).data("type");
+                    parameters.push(parameter);
+                }); 
+                data.parameters = parameters;
+                var jsonedParameters = JSON.stringify(data);
+                
                 path = /*[[@{/markers?routeNumber=}]]*/;
                 $.ajax({
-                    url: path + currentRoute + "&vehicleType=" + currentVehicleType,
+                    url: path + currentRoute + "&parameters=" + jsonedParameters,
                     type: 'get',
                     success: function (html) {
                         $("#markersContent").html(html);

@@ -15,7 +15,7 @@
                     <tr th:value="${vehicle.regNumber}" th:each="vehicle : ${vehicles}" 
                         th:data-dir="${vehicle.dir}" th:data-route="${vehicle.routeNumber}" 
                         th:data-lat="${vehicle.latitude}" th:data-lon="${vehicle.longtitude}"
-                        th:data-route-type="${vehicle.routeType}">
+                        th:data-route-type="${vehicle.routeType}" th:data-reg-number="${vehicle.regNumber}">
                     </tr>
                 </tbody>
             </table>

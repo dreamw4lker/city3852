@@ -75,7 +75,8 @@
                     view: new ol.View({
                         center: new ol.proj.fromLonLat([83.7625, 53.3502]),
                         zoom: 14
-                    })
+                    }),
+                    moveTolerance: 5
                 });
                 
                 //Preparing vehicle icons
@@ -116,6 +117,19 @@
                     image: iconTrolleybus
                 });
                 
+                //Preparing font styles
+                var markerFillStyle = new ol.style.Fill({
+                    color: '#000'
+                });
+                
+                var markerStrokeStyle = new ol.style.Stroke({
+                    color: '#fff',
+                    width: 2
+                });
+                
+                //
+                var showRegNumber = false;
+                
                 //Modal show event
                 map.on('click', function(evt) {
                     var feature = map.forEachFeatureAtPixel(evt.pixel, function(feature) {
@@ -146,6 +160,7 @@
                         var rnum = $(this).data("route");
                         var dir = $(this).data("dir");
                         var routeType = $(this).data("route-type");
+                        var regNumber = $(this).data("reg-number");
 
                         var imageStyle;
                         switch(routeType) {
@@ -170,7 +185,16 @@
                         var coordinates = [];
                         coordinates.push(new ol.proj.fromLonLat([lon / 1000000, lat / 1000000]));
 
-                        imageStyle.setText(new ol.style.Text({ font: '18px sans-serif', text: rnum}));
+                        if(!showRegNumber){
+                            imageStyle.setText(new ol.style.Text({ font: '18px sans-serif', text: rnum}));
+                        } else {
+                            imageStyle.setText(new ol.style.Text({ 
+                                font: '14px sans-serif', 
+                                text: rnum + " (" + regNumber + ')', 
+                                fill: markerFillStyle, 
+                                stroke: markerStrokeStyle
+                            }));
+                        }
                         vectorContext.setStyle(imageStyle);
                         vectorContext.drawGeometry(new ol.geom.MultiPoint(coordinates));
                     });
