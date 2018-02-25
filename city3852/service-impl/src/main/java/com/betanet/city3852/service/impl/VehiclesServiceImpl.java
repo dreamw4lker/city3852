@@ -106,14 +106,7 @@ public class VehiclesServiceImpl implements VehiclesService {
         } catch (NumberFormatException | JSONException ex){
             System.out.println("Error while prepating vehicles list: " + ex.getMessage());
         }
-        System.out.println(vehicleEntities.size());
         return vehicleEntities;
         
     }
-
-    //@Override
-    //public List<Vehicle> getVehiclesList() {
-    //    return getVehiclesListByRouteNumber("");
-    //}
-    
 }

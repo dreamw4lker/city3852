@@ -177,7 +177,7 @@
                                 imageStyle = imageStyleTramway;
                                 break;
                             default:
-                                break;
+                                return true;
                         }
 
                         imageStyle.getImage().setRotation(dir * (Math.PI / 180));
