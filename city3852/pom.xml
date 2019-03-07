@@ -22,7 +22,7 @@
         <thymeleaf.version>3.0.10.RELEASE</thymeleaf.version>  
         <jetty.version>9.4.11.v20180605</jetty.version>
         <hibernate.version>5.3.6.Final</hibernate.version>
-        <jackson.version>2.9.7</jackson.version>
+        <jackson.version>2.9.8</jackson.version>
     </properties>
     <dependencyManagement>
         <dependencies>
