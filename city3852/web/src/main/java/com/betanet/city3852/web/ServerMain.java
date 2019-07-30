@@ -24,6 +24,8 @@
 package com.betanet.city3852.web;
 
 import java.io.IOException;
+
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -38,6 +40,7 @@ import org.springframework.web.servlet.DispatcherServlet;
  * 
  * @author shkirkov.au
  */
+@Slf4j
 public class ServerMain {
     private static final String XML_CONFIG_FILES_LOCATION = "classpath:/spring/servlet-context.xml";
     private static final String CONTEXT_PATH = "/";
@@ -55,7 +58,7 @@ public class ServerMain {
         initConfiguration();
         System.setProperty("http.agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36");
         Server server = new Server(serverPort);
-        System.out.println("City3852 server started at port " + serverPort);
+        log.info("City3852 server started at port " + serverPort);
         server.setHandler(getServletContextHandler(getContext()));
         server.start();
         server.join();
